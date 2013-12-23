@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+from os import path
+
+DEFAULT_TARGET = path.expanduser("~/bin/")
+LN_COMMAND = ["ln", "-s"]
+CHMOD_COMMAND = ["chmod", "755"]
+def usage():
+    print("usage: {0} script [target]".format(sys.argv[0]))
+
+def get_source():
+    return sys.argv[1]
+
+def get_target():
+    try:
+        ret = sys.argv[2]
+    except IndexError:
+        ret = DEFAULT_TARGET
+
+    return DEFAULT_TARGET
+
+def install(source, target):
+    chmod = CHMOD_COMMAND + [source]
+    link = LN_COMMAND + ['-t', target, path.abspath(source)]
+
+    subprocess.call(chmod)
+    subprocess.call(link)
+
+def main():
+    if len(sys.argv) < 2:
+        usage()
+        sys.exit(1)
+    source = get_source()
+    target = get_target()
+    install(source=source, target=target)
+
+if __name__ == '__main__':
+    main()
