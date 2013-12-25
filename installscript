@@ -7,11 +7,15 @@ from os import path
 DEFAULT_TARGET = path.expanduser("~/bin/")
 LN_COMMAND = ["ln", "-s"]
 CHMOD_COMMAND = ["chmod", "755"]
+
+
 def usage():
     print("usage: {0} script [target]".format(sys.argv[0]))
 
+
 def get_source():
     return sys.argv[1]
+
 
 def get_target():
     try:
@@ -19,7 +23,8 @@ def get_target():
     except IndexError:
         ret = DEFAULT_TARGET
 
-    return DEFAULT_TARGET
+    return ret
+
 
 def install(source, target):
     chmod = CHMOD_COMMAND + [source]
@@ -27,6 +32,7 @@ def install(source, target):
 
     subprocess.call(chmod)
     subprocess.call(link)
+
 
 def main():
     if len(sys.argv) < 2:
