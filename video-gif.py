@@ -20,7 +20,8 @@ def main():
     while reply == "y":
         generate_gif(image_seq, dither, gif_name)
         reply = input("Generating gif again? (y/n): ")
-        image_seq = get_image_seq()
+        if reply == "y":
+            image_seq = get_image_seq()
 
     clear_png()
 
@@ -91,20 +92,12 @@ def try_call(pref, prep):
 
 
 def get_image_seq():
-    full = input("image sequence (start end [skip]): ")
-    fullint = [int(i) for i in full.split(" ")]
-
-    start = fullint[0]
-    end = fullint[1]
-
-    if len(fullint) > 2:
-        skip = fullint[2]
-    else:
-        skip = 1
+    full = input("image sequence (start end): ")
+    start, end = [int(i) for i in full.split(" ")]
 
     imger = lambda i: "{:03d}.png".format(i)
 
-    return [imger(i) for i in range(start, end, skip)]
+    return [imger(i) for i in range(start, end, 3)]
 
 
 def get_prefix_cmd(img_seq, dither):
