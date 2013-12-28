@@ -14,7 +14,7 @@ def main():
     generate_image2()
     image_seq = get_image_seq()
     dither = get_dither(image_seq)
-    gif_name = input("gif name: ")
+    gif_name = get_gif_name()
 
     reply = "y"
     while reply == "y":
@@ -30,13 +30,20 @@ def usage():
     print("usage: {} video".format(sys.argv[0]))
 
 
+def get_gif_name():
+    gif_name = input("gif name: ")
+    gif_name = re.sub(r'\.gif', '', gif_name) + '.gif'
+    return gif_name
+
+
 def generate_image2():
     ss = input("start seek time (hh:mm:ss): ")
     validate(ss, r"\d{,2}:\d{,2}:\d{,2}")
     t = input("duration: ")
     validate(t, r"\d+")
 
-    cmd = ["ffmpeg",
+    cmd = [
+        "ffmpeg",
         "-ss", ss,
         "-i", sys.argv[1],
         "-t", t,
@@ -61,7 +68,6 @@ def validate(s, format):
     sys.exit(1)
 
 
-
 def get_dither(img_seq):
     prepare_cmd = [
         "-append",
@@ -70,8 +76,8 @@ def get_dither(img_seq):
     ]
 
     dither = 6
-    for i in range(9,6,-1):
-        prefix_cmd = get_prefix_cmd(img_seq,i)
+    for i in range(9, 6, -1):
+        prefix_cmd = get_prefix_cmd(img_seq, i)
         output = try_call(prefix_cmd, prepare_cmd)
         if output <= 256:
             dither = i
@@ -101,18 +107,21 @@ def get_image_seq():
 
 
 def get_prefix_cmd(img_seq, dither):
-    return ["convert",
+    start = [
+        "convert",
         "-delay", "1x8",
-    ] + img_seq + [
+    ]
+    end = [
         "-ordered-dither", "o8x8,{}".format(dither),
         "-coalesce",
         "-layers", "OptimizeTransparency",
     ]
+    return start + img_seq + end
 
 
 def generate_gif(img_seq, dither, gif_name):
     final_cmd = [
-       "+map",
+        "+map",
         gif_name,
     ]
 
@@ -137,4 +146,3 @@ def clear_png():
 
 if __name__ == "__main__":
     main()
-
