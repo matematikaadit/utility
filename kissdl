@@ -1,0 +1,10 @@
+#!/bin/bash
+
+wget_output="INDEX.HTML"
+sed_output="DL.TXT"
+wget --read-timeout 5 -O $wget_output -c $1
+sed -n 's/^.*lstImages.push("\(.*\)");.*$/\1/p' $wget_output > $sed_output
+wget --read-timeout 5 -c -i $sed_output
+echo '<style>img{max-width:100%}</style>' > show.html
+rename 's/\?.*$//' *\?*
+ls ???.??? | sed 's/^/<img src="/;s/$/" >/' >> show.html
