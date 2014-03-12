@@ -62,7 +62,7 @@ def imgur_upload(url):
     address = 'http://imgur.com/upload'
     params = { 'url' : url }
 
-   r = requests.get(address, params=params, allow_redirects=False)
+    r = requests.get(address, params=params, allow_redirects=False)
     return r
 
 
